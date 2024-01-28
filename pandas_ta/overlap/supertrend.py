@@ -6,7 +6,7 @@ from pandas_ta.volatility import atr
 from pandas_ta.utils import get_offset, verify_series
 
 
-def supertrend(high, low, close, length=None, multiplier=None, offset=None, **kwargs):
+def supertrend(high, low, close, length=None, multiplier=None, offset=None, source="hl2",  **kwargs):
     """Indicator: Supertrend"""
     # Validate Arguments
     length = int(length) if length and length > 0 else 7
@@ -22,8 +22,11 @@ def supertrend(high, low, close, length=None, multiplier=None, offset=None, **kw
     m = close.size
     dir_, trend = [1] * m, [0] * m
     long, short = [npNaN] * m, [npNaN] * m
-
-    hl2_ = hl2(high, low)
+    hl2_ = 0
+    if source == "hl2":
+        hl2_ = hl2(high, low)
+    elif source == "close":
+        hl2_ = close
     matr = multiplier * atr(high, low, close, length)
     upperband = hl2_ + matr
     lowerband = hl2_ - matr
